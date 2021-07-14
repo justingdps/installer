@@ -46,6 +46,7 @@ namespace jgdpsinstaller
 			this.LabelSource = new System.Windows.Forms.LinkLabel();
 			this.PBLogo = new System.Windows.Forms.PictureBox();
 			this.InstallProgress = new System.Windows.Forms.ProgressBar();
+			this.LabelProgress = new System.Windows.Forms.Label();
 			this.PanelToolbar.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBLogo)).BeginInit();
 			this.SuspendLayout();
@@ -59,6 +60,7 @@ namespace jgdpsinstaller
 			this.FolderInput.Name = "FolderInput";
 			this.FolderInput.Size = new System.Drawing.Size(450, 20);
 			this.FolderInput.TabIndex = 8;
+			this.FolderInput.TextChanged += new System.EventHandler(this.FolderInput_TextChanged);
 			// 
 			// BtnBrowse
 			// 
@@ -246,12 +248,23 @@ namespace jgdpsinstaller
 			this.InstallProgress.TabIndex = 24;
 			this.InstallProgress.Visible = false;
 			// 
+			// LabelProgress
+			// 
+			this.LabelProgress.AutoSize = true;
+			this.LabelProgress.ForeColor = System.Drawing.Color.White;
+			this.LabelProgress.Location = new System.Drawing.Point(122, 384);
+			this.LabelProgress.Name = "LabelProgress";
+			this.LabelProgress.Size = new System.Drawing.Size(10, 13);
+			this.LabelProgress.TabIndex = 25;
+			this.LabelProgress.Text = "";
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(29)))), ((int)(((byte)(36)))));
 			this.ClientSize = new System.Drawing.Size(800, 510);
+			this.Controls.Add(this.LabelProgress);
 			this.Controls.Add(this.InstallProgress);
 			this.Controls.Add(this.LabelSource);
 			this.Controls.Add(this.BtnInstall);
@@ -272,7 +285,6 @@ namespace jgdpsinstaller
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "JustinGDPS Installer";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
-			this.Load += new System.EventHandler(this.FormMain_Load);
 			this.PanelToolbar.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PBLogo)).EndInit();
 			this.ResumeLayout(false);
@@ -298,6 +310,7 @@ namespace jgdpsinstaller
 		private System.Windows.Forms.LinkLabel LabelSource;
 		private System.Windows.Forms.Button BtnMinimize;
 		private System.Windows.Forms.ProgressBar InstallProgress;
+		private System.Windows.Forms.Label LabelProgress;
 	}
 }
 

@@ -2,12 +2,12 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ionic.Zip;
 
 namespace jgdpsinstaller
 {
@@ -49,9 +49,6 @@ namespace jgdpsinstaller
 				if (!Directory.Exists(FolderSelect.SelectedPath))
 					Directory.CreateDirectory(FolderSelect.SelectedPath);
 
-				InstallProgress.Style = ProgressBarStyle.Marquee;
-				InstallProgress.Enabled = true;
-
 				await Task.Run(InstallGDPS);
 				FinishInstall();
 			}
@@ -65,7 +62,10 @@ namespace jgdpsinstaller
 		{
 			try
 			{
-				new ZipArchive(Assembly.GetExecutingAssembly().GetManifestResourceStream("jgdpsinstaller.JustinGDPS.zip")).ExtractToDirectory(FolderSelect.SelectedPath);
+				ZipFile GDPS = ZipFile.Read(Assembly.GetExecutingAssembly().GetManifestResourceStream("jgdpsinstaller.JustinGDPS.zip"));
+				totalFiles = GDPS.Count;
+				GDPS.ExtractProgress += new EventHandler<ExtractProgressEventArgs>(GDPS_ExtractProgress);
+				GDPS.ExtractAll(FolderSelect.SelectedPath, ExtractExistingFileAction.OverwriteSilently);
 			}
 			catch (Exception err)
 			{
@@ -75,7 +75,7 @@ namespace jgdpsinstaller
 
 		private void FinishInstall()
 		{
-			InstallProgress.Style = ProgressBarStyle.Blocks;
+			LabelProgress.Text = "";
 			InstallProgress.Value = 100;
 			installState = false;
 			finishState = true;

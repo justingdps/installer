@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ionic.Zip;
 
 namespace jgdpsinstaller
 {
@@ -31,10 +33,19 @@ namespace jgdpsinstaller
 				Location = new Point(Cursor.Position.X - mouseX, Cursor.Position.Y - mouseY);
 		}
 
+		private void FolderInput_TextChanged(object sender, EventArgs e)
+		{
+			if (FolderSelect.SelectedPath != FolderInput.Text)
+				FolderSelect.SelectedPath = FolderInput.Text;
+		}
+
 		private void BtnBrowse_Click(object sender, EventArgs e)
 		{
 			if (FolderSelect.ShowDialog() == DialogResult.OK)
+			{
 				FolderInput.Text = FolderSelect.SelectedPath;
+				LabelDisclaimer.Text = "Required space: 230 MB | Available space: " + GetDiskSpace();
+			}
 		}
 
 		private void BtnInstall_Click(object sender, EventArgs e)
@@ -56,6 +67,18 @@ namespace jgdpsinstaller
 			InstallProgress.Visible = true;
 
 			StartInstall();
+		}
+
+		private void GDPS_ExtractProgress(object sender, ExtractProgressEventArgs e)
+		{
+			if (e.CurrentEntry != null)
+				LabelProgress.Invoke((MethodInvoker)(() => LabelProgress.Text = e.CurrentEntry.FileName));
+
+			if (e.EventType == ZipProgressEventType.Extracting_BeforeExtractEntry)
+			{
+				filesExtracted++;
+				InstallProgress.Invoke((MethodInvoker)(() => InstallProgress.Value = 100 * filesExtracted / totalFiles));
+			}
 		}
 
 		private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
