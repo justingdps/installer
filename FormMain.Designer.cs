@@ -29,6 +29,7 @@ namespace jgdpsinstaller
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
 			this.FolderInput = new System.Windows.Forms.TextBox();
 			this.BtnBrowse = new System.Windows.Forms.Button();
@@ -36,8 +37,6 @@ namespace jgdpsinstaller
 			this.DesktopCheck = new System.Windows.Forms.CheckBox();
 			this.StartMenuCheck = new System.Windows.Forms.CheckBox();
 			this.RunAppCheck = new System.Windows.Forms.CheckBox();
-			this.MHDesktopCheck = new System.Windows.Forms.CheckBox();
-			this.MHStartMenuCheck = new System.Windows.Forms.CheckBox();
 			this.LabelDisclaimer = new System.Windows.Forms.Label();
 			this.PanelToolbar = new System.Windows.Forms.Panel();
 			this.BtnMinimize = new System.Windows.Forms.Button();
@@ -47,6 +46,8 @@ namespace jgdpsinstaller
 			this.PBLogo = new System.Windows.Forms.PictureBox();
 			this.InstallProgress = new System.Windows.Forms.ProgressBar();
 			this.LabelProgress = new System.Windows.Forms.Label();
+			this.LabelTime = new System.Windows.Forms.Label();
+			this.TimerTime = new System.Windows.Forms.Timer(this.components);
 			this.PanelToolbar.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBLogo)).BeginInit();
 			this.SuspendLayout();
@@ -114,34 +115,6 @@ namespace jgdpsinstaller
 			this.RunAppCheck.UseVisualStyleBackColor = true;
 			this.RunAppCheck.Visible = false;
 			// 
-			// MHDesktopCheck
-			// 
-			this.MHDesktopCheck.AutoSize = true;
-			this.MHDesktopCheck.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.MHDesktopCheck.Checked = true;
-			this.MHDesktopCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.MHDesktopCheck.ForeColor = System.Drawing.Color.White;
-			this.MHDesktopCheck.Location = new System.Drawing.Point(481, 425);
-			this.MHDesktopCheck.Name = "MHDesktopCheck";
-			this.MHDesktopCheck.Size = new System.Drawing.Size(174, 17);
-			this.MHDesktopCheck.TabIndex = 14;
-			this.MHDesktopCheck.Text = "Desktop Shortcut (Mega Hack)";
-			this.MHDesktopCheck.UseVisualStyleBackColor = true;
-			// 
-			// MHStartMenuCheck
-			// 
-			this.MHStartMenuCheck.AutoSize = true;
-			this.MHStartMenuCheck.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.MHStartMenuCheck.Checked = true;
-			this.MHStartMenuCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.MHStartMenuCheck.ForeColor = System.Drawing.Color.White;
-			this.MHStartMenuCheck.Location = new System.Drawing.Point(469, 450);
-			this.MHStartMenuCheck.Name = "MHStartMenuCheck";
-			this.MHStartMenuCheck.Size = new System.Drawing.Size(186, 17);
-			this.MHStartMenuCheck.TabIndex = 15;
-			this.MHStartMenuCheck.Text = "Start Menu Shortcut (Mega Hack)";
-			this.MHStartMenuCheck.UseVisualStyleBackColor = true;
-			// 
 			// LabelDisclaimer
 			// 
 			this.LabelDisclaimer.AutoSize = true;
@@ -150,7 +123,7 @@ namespace jgdpsinstaller
 			this.LabelDisclaimer.Name = "LabelDisclaimer";
 			this.LabelDisclaimer.Size = new System.Drawing.Size(214, 13);
 			this.LabelDisclaimer.TabIndex = 20;
-			this.LabelDisclaimer.Text = "Required space: 230 MB | Available space: ";
+			this.LabelDisclaimer.Text = "Required space: 178 MB | Available space: ";
 			// 
 			// PanelToolbar
 			// 
@@ -204,7 +177,7 @@ namespace jgdpsinstaller
 			this.BtnInstall.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.BtnInstall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.BtnInstall.ForeColor = System.Drawing.Color.White;
-			this.BtnInstall.Location = new System.Drawing.Point(688, 471);
+			this.BtnInstall.Location = new System.Drawing.Point(688, 468);
 			this.BtnInstall.Name = "BtnInstall";
 			this.BtnInstall.Size = new System.Drawing.Size(100, 30);
 			this.BtnInstall.TabIndex = 22;
@@ -242,7 +215,6 @@ namespace jgdpsinstaller
 			// 
 			this.InstallProgress.Enabled = false;
 			this.InstallProgress.Location = new System.Drawing.Point(125, 400);
-			this.InstallProgress.MarqueeAnimationSpeed = 1;
 			this.InstallProgress.Name = "InstallProgress";
 			this.InstallProgress.Size = new System.Drawing.Size(530, 21);
 			this.InstallProgress.TabIndex = 24;
@@ -254,9 +226,22 @@ namespace jgdpsinstaller
 			this.LabelProgress.ForeColor = System.Drawing.Color.White;
 			this.LabelProgress.Location = new System.Drawing.Point(122, 384);
 			this.LabelProgress.Name = "LabelProgress";
-			this.LabelProgress.Size = new System.Drawing.Size(10, 13);
+			this.LabelProgress.Size = new System.Drawing.Size(0, 13);
 			this.LabelProgress.TabIndex = 25;
-			this.LabelProgress.Text = "";
+			// 
+			// LabelTime
+			// 
+			this.LabelTime.AutoSize = true;
+			this.LabelTime.ForeColor = System.Drawing.Color.White;
+			this.LabelTime.Location = new System.Drawing.Point(606, 425);
+			this.LabelTime.Name = "LabelTime";
+			this.LabelTime.Size = new System.Drawing.Size(0, 13);
+			this.LabelTime.TabIndex = 26;
+			// 
+			// TimerTime
+			// 
+			this.TimerTime.Interval = 1000;
+			this.TimerTime.Tick += new System.EventHandler(this.TimerTime_Tick);
 			// 
 			// FormMain
 			// 
@@ -264,14 +249,13 @@ namespace jgdpsinstaller
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(29)))), ((int)(((byte)(36)))));
 			this.ClientSize = new System.Drawing.Size(800, 510);
+			this.Controls.Add(this.LabelTime);
 			this.Controls.Add(this.LabelProgress);
 			this.Controls.Add(this.InstallProgress);
 			this.Controls.Add(this.LabelSource);
 			this.Controls.Add(this.BtnInstall);
 			this.Controls.Add(this.PanelToolbar);
 			this.Controls.Add(this.LabelDisclaimer);
-			this.Controls.Add(this.MHStartMenuCheck);
-			this.Controls.Add(this.MHDesktopCheck);
 			this.Controls.Add(this.RunAppCheck);
 			this.Controls.Add(this.StartMenuCheck);
 			this.Controls.Add(this.DesktopCheck);
@@ -301,8 +285,6 @@ namespace jgdpsinstaller
 		private System.Windows.Forms.CheckBox DesktopCheck;
 		private System.Windows.Forms.CheckBox StartMenuCheck;
 		private System.Windows.Forms.CheckBox RunAppCheck;
-		private System.Windows.Forms.CheckBox MHDesktopCheck;
-		private System.Windows.Forms.CheckBox MHStartMenuCheck;
 		private System.Windows.Forms.Label LabelDisclaimer;
 		private System.Windows.Forms.Panel PanelToolbar;
 		private System.Windows.Forms.Button BtnClose;
@@ -311,6 +293,8 @@ namespace jgdpsinstaller
 		private System.Windows.Forms.Button BtnMinimize;
 		private System.Windows.Forms.ProgressBar InstallProgress;
 		private System.Windows.Forms.Label LabelProgress;
+		private System.Windows.Forms.Label LabelTime;
+		private System.Windows.Forms.Timer TimerTime;
 	}
 }
 

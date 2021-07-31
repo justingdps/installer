@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -7,21 +9,40 @@ namespace jgdpsinstaller
 	public partial class FormMain : Form
 	{
 		private bool installState = false;
+		private bool uninstallState = false;
 		private bool finishState = false;
 		private bool mouseDown = false;
-
-		private int filesExtracted = 0;
-		private int totalFiles = 0;
+		private readonly bool installed = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\JustinGDPS") != null;
 
 		private int mouseX = 0;
 		private int mouseY = 0;
+		private int tick = 0;
 
 		public FormMain()
 		{
 			InitializeComponent();
-			FolderInput.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "JustinGDPS");
-			FolderSelect.SelectedPath = FolderInput.Text;
-			LabelDisclaimer.Text += GetDiskSpace();
+			if (installed)
+			{
+				BtnBrowse.Enabled = false;
+				FolderInput.Enabled = false;
+				DesktopCheck.Enabled = false;
+				StartMenuCheck.Enabled = false;
+				LabelDisclaimer.Enabled = false;
+				BtnBrowse.Visible = false;
+				FolderInput.Visible = false;
+				DesktopCheck.Visible = false;
+				StartMenuCheck.Visible = false;
+				LabelDisclaimer.Visible = false;
+
+				BtnInstall.Text = "Uninstall";
+				BtnInstall.BackColor = Color.LightCoral;
+			}
+			else
+			{
+				FolderInput.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "JustinGDPS");
+				FolderSelect.SelectedPath = FolderInput.Text;
+				LabelDisclaimer.Text += GetDiskSpace();
+			}
 		}
 
 		private string GetDiskSpace()

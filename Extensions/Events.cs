@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Threading.Tasks;
+using System.Security.Principal;
 using System.Windows.Forms;
-using Ionic.Zip;
 
 namespace jgdpsinstaller
 {
@@ -44,46 +43,55 @@ namespace jgdpsinstaller
 			if (FolderSelect.ShowDialog() == DialogResult.OK)
 			{
 				FolderInput.Text = FolderSelect.SelectedPath;
-				LabelDisclaimer.Text = "Required space: 230 MB | Available space: " + GetDiskSpace();
+				LabelDisclaimer.Text = "Required space: 178 MB | Available space: " + GetDiskSpace();
 			}
 		}
 
 		private void BtnInstall_Click(object sender, EventArgs e)
 		{
-			installState = true;
-			BtnInstall.Enabled = false;
-			BtnBrowse.Enabled = false;
-			FolderInput.Enabled = false;
-			DesktopCheck.Enabled = false;
-			StartMenuCheck.Enabled = false;
-			BtnInstall.Visible = false;
-			BtnBrowse.Visible = false;
-			FolderInput.Visible = false;
-			DesktopCheck.Visible = false;
-			StartMenuCheck.Visible = false;
-			MHDesktopCheck.Visible = false;
-			MHStartMenuCheck.Visible = false;
-			InstallProgress.Enabled = true;
-			InstallProgress.Visible = true;
-
-			StartInstall();
-		}
-
-		private void GDPS_ExtractProgress(object sender, ExtractProgressEventArgs e)
-		{
-			if (e.CurrentEntry != null)
-				LabelProgress.Invoke((MethodInvoker)(() => LabelProgress.Text = e.CurrentEntry.FileName));
-
-			if (e.EventType == ZipProgressEventType.Extracting_BeforeExtractEntry)
+			if (!new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
+				MessageBox.Show("Administrator permission is disabled.", "Administrator Permission Disabled", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			
+			if (installed)
 			{
-				filesExtracted++;
-				InstallProgress.Invoke((MethodInvoker)(() => InstallProgress.Value = 100 * filesExtracted / totalFiles));
+				uninstallState = true;
+				BtnInstall.Enabled = false;
+				BtnInstall.Visible = false;
+				InstallProgress.Enabled = true;
+				InstallProgress.Visible = true;
+
+				StartUninstall();
+			}
+			else
+			{
+				try
+				{
+					if (int.Parse(GetDiskSpace().Split(char.Parse(" MB"))[0].Split(char.Parse(" KB"))[0].Split(char.Parse(" B"))[0]) < 178)
+						MessageBox.Show("There is not enough disk space.", "Not Enough Disk Space", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				catch { }
+
+				installState = true;
+				BtnInstall.Enabled = false;
+				BtnBrowse.Enabled = false;
+				FolderInput.Enabled = false;
+				DesktopCheck.Enabled = false;
+				StartMenuCheck.Enabled = false;
+				BtnInstall.Visible = false;
+				BtnBrowse.Visible = false;
+				FolderInput.Visible = false;
+				DesktopCheck.Visible = false;
+				StartMenuCheck.Visible = false;
+				InstallProgress.Enabled = true;
+				InstallProgress.Visible = true;
+
+				StartInstall();
 			}
 		}
 
 		private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (installState)
+			if (installState || uninstallState)
 			{
 				DialogResult confirm = MessageBox.Show("Are you sure you want to abort the installation?", "Abort Installation", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
@@ -142,6 +150,13 @@ namespace jgdpsinstaller
 				FileName = "https://github.com/justingdps/installer",
 				UseShellExecute = true
 			});
+		}
+
+		private void TimerTime_Tick(object sender, EventArgs e)
+		{
+			tick++;
+
+			LabelTime.Text = TimeSpan.FromSeconds(tick).ToString("hh':'mm':'ss");
 		}
 	}
 }
